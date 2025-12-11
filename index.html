@@ -1,1 +1,295 @@
-<h1>Github test bingo</h1>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Premios Gaming - Acceso</title>
+  <link rel="stylesheet" href="estilo.css">
+  <style>
+    /* ESTILOS MINIMALISTAS PARA EL INDEX */
+    .intro-body {
+      background-image: url('Imagegoty.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .super-logo-img {
+      width: 260px;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      opacity: 0;
+      animation: logoSlide 1.8s ease forwards;
+      animation-delay: 0.5s;
+      z-index: 100;
+    }
+
+    @keyframes logoSlide { 
+      0% { opacity: 0; transform: translateY(-30px); } 
+      100% { opacity: 1; transform: translateY(0); } 
+    }
+
+    .access-container {
+      background: rgba(0, 0, 0, 0.85);
+      padding: 40px;
+      border-radius: 20px;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 0 40px rgba(0, 255, 195, 0.3);
+      border: 2px solid #00ffc3;
+      backdrop-filter: blur(5px);
+    }
+
+    .access-title {
+      color: #00ffc3;
+      font-size: 36px;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px #00ffc3;
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    .access-subtitle {
+      color: #ffffff;
+      font-size: 16px;
+      margin-bottom: 30px;
+      opacity: 0.8;
+      font-weight: 300;
+    }
+
+    .access-input {
+      width: 100%;
+      padding: 15px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.95);
+      color: #000;
+      box-sizing: border-box;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .access-input::placeholder {
+      color: #666;
+      font-weight: normal;
+    }
+
+    .access-btn {
+      background: linear-gradient(135deg, #00ffc3, #00e6ac);
+      padding: 15px 30px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      color: #000;
+      font-weight: 700;
+      width: 100%;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 255, 195, 0.3);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .access-btn:hover {
+      background: linear-gradient(135deg, #0fb, #0da);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 255, 195, 0.4);
+    }
+
+    .access-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .access-message {
+      margin-top: 20px;
+      font-size: 14px;
+      min-height: 20px;
+      padding: 10px;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .access-message.success {
+      color: #00ff55;
+      background: rgba(0, 255, 85, 0.1);
+    }
+
+    .access-message.error {
+      color: #ff3333;
+      background: rgba(255, 51, 51, 0.1);
+    }
+
+    .access-hint {
+      margin-top: 25px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+      font-style: italic;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 15px;
+    }
+
+    /* REDES SOCIALES DISCRETAS */
+    .social-links {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      text-align: right;
+      z-index: 100;
+    }
+
+    .social-links a {
+      color: #00ffc3;
+      text-decoration: none;
+      font-size: 14px;
+      display: block;
+      margin-top: 8px;
+      padding: 5px 10px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 15px;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(0, 255, 195, 0.2);
+    }
+
+    .social-links a:hover {
+      color: #fff;
+      background: rgba(0, 255, 195, 0.1);
+      transform: translateX(-5px);
+    }
+
+    /* PARTÍCULAS SUTILES */
+    .particle {
+      position: fixed;
+      background: rgba(255, 255, 255, 0.6);
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      opacity: 0.4;
+      animation: floatUp linear infinite;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    @keyframes floatUp { 
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; } 
+      50% { opacity: 0.6; }
+      100% { transform: translateY(-100px) rotate(180deg); opacity: 0; } 
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .access-container {
+        padding: 30px 20px;
+        margin: 20px;
+      }
+      
+      .access-title {
+        font-size: 28px;
+      }
+      
+      .super-logo-img {
+        width: 180px;
+        right: 10px;
+        top: 10px;
+      }
+      
+      .social-links {
+        right: 10px;
+        bottom: 10px;
+      }
+      
+      .social-links a {
+        font-size: 12px;
+        padding: 4px 8px;
+      }
+    }
+  </style>
+</head>
+<body class="intro-body">
+
+  <!-- LOGO EN ESQUINA SUPERIOR DERECHA -->
+  <img src="logo12.png" alt="Logo The Game Awards" class="super-logo-img">
+
+  <!-- CONTENEDOR PRINCIPAL DE ACCESO -->
+  <div class="access-container">
+    <h1 class="access-title">THE GAME AWARDS</h1>
+    <p class="access-subtitle">Evento Bingo de Neptune_180</p>
+
+    <input 
+      type="password"
+      id="codeInput" 
+      placeholder="🔒 Código de acceso"
+      class="access-input"
+      autocomplete="off"
+      autocapitalize="characters"
+    >
+
+    <button onclick="verificarCodigo()" class="access-btn" id="accessBtn">
+      INGRESAR
+    </button>
+
+    <div id="msg" class="access-message"></div>
+    
+    <div class="access-hint">
+      <p>Introduce el código proporcionado para acceder al bingo</p>
+    </div>
+  </div>
+
+  <!-- REDES SOCIALES DISCRETAS -->
+  <div class="social-links">
+    <a href="https://www.twitch.tv/neptune_180" target="_blank">Twitch</a>
+    <a href="https://www.instagram.com/neptu1.80/" target="_blank">Instagram</a>
+    <a href="https://x.com/NptAry" target="_blank">X</a>
+  </div>
+
+  <!-- SCRIPT PARA ACCESO -->
+  <script src="script.js"></script>
+  
+  <!-- PARTÍCULAS -->
+  <script>
+    // PARTÍCULAS SUTILES
+    function crearParticulas() {
+      for(let i = 0; i < 10; i++) {
+        const p = document.createElement("div");
+        p.classList.add("particle");
+        p.style.left = Math.random() * window.innerWidth + "px";
+        p.style.top = window.innerHeight + "px";
+        p.style.animationDuration = (4 + Math.random() * 6) + "s";
+        p.style.animationDelay = Math.random() * 2 + "s";
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 10000);
+      }
+    }
+    
+    // Iniciar partículas
+    setInterval(crearParticulas, 1500);
+    crearParticulas();
+    
+    // ENTER PARA ENVIAR
+    document.getElementById('codeInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        verificarCodigo();
+      }
+    });
+    
+    // AUTO FOCUS
+    setTimeout(() => {
+      document.getElementById('codeInput').focus();
+    }, 500);
+  </script>
+</body>
+</html>
