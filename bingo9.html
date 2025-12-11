@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Bingo [NUMERO] - Zona de Juego</title>
+  <link rel="stylesheet" href="estilo.css"> 
+  <style>
+    /* TU CSS EXACTO - SOLO CAMBIA EL TÍTULO ARRIBA */
+    body {
+      animation: fadeIn 1.6s ease forwards;
+      opacity: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    .intro-body {
+      background-image: url('Imagegoty.png'); /* EL FONDO GENERAL SIGUE IGUAL */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    .super-logo-img {
+      width: 260px;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      opacity: 0;
+      animation: logoSlide 1.8s ease forwards;
+    }
+
+    @keyframes logoSlide { 0% {opacity:0; transform:translateY(-30px);} 100%{opacity:1; transform:translateY(0);} }
+
+    /* AQUÍ ESTÁ EL CAMBIO: EL CUADRO DE BINGO AHORA TIENE SU PROPIO FONDO */
+    .bingo-wrapper { 
+      margin: 180px auto 60px; 
+      width: fit-content; 
+      text-align:center;
+      background-image: url('Neptune.png'); /* ← IMAGEN PARA EL CUADRO DE BINGO */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .bingo-header {
+      display: grid;
+      grid-template-columns: repeat(5, 120px);
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+    .bingo-header div { 
+      font-size: 45px; 
+      font-weight: bold; 
+      color: #000000 !important;  /* NEGRO para todos */
+      text-align:center; 
+      transition: all 0.3s ease;
+    }
+
+    .bingo-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 120px);
+      grid-template-rows: repeat(5, 120px);
+      gap: 5px;
+      margin-bottom: 20px;
+    }
+
+    .bingo-cell {
+      background: rgba(255,255,255,0.9);
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: bold;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+      border: 2px solid rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+
+    .bingo-cell:hover:not(.marked) {
+      background: rgba(255,255,255,1);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .bingo-cell.marked {
+      background: linear-gradient(135deg, #00ff55, #00cc44) !important;
+      color: white !important;
+      transform: scale(0.98);
+      border-color: #009933;
+      box-shadow: inset 0 0 15px rgba(0,0,0,0.2);
+    }
+
+    .bingo-cell.marked .cell-word {
+      color: white !important;
+      opacity: 0.9;
+    }
+
+    .bingo-cell.marked::after {
+      content: "✓" !important;
+      position: absolute;
+      font-size: 55px;
+      opacity: 0.35;
+      color: #ffffff !important;
+      pointer-events: none;
+      font-weight: 900;
+    }
+
+    /* ANIMACIÓN PARA LETRAS CUANDO SE COMPLETA LÍNEA */
+    .linea-completada {
+      animation: celebrarLetra 0.8s ease 3 !important;
+      color: #ff0000 !important;
+      text-shadow: 0 0 15px rgba(255, 0, 0, 0.7) !important;
+    }
+
+    @keyframes celebrarLetra {
+      0%, 100% { 
+        transform: scale(1); 
+      }
+      50% { 
+        transform: scale(1.3); 
+        color: #ff5500 !important;
+      }
+    }
+
+    .enter-btn {
+      background: #00ffc3;
+      padding: 12px 20px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: black;
+      margin:5px;
+      transition: all 0.3s ease;
+    }
+    .enter-btn:hover { 
+      background: #0fb; 
+      transform: translateY(-2px);
+    }
+
+    .social-links {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      text-align: right;
+    }
+    .social-links a { color: #00ffc3; text-decoration:none; font-size:16px; display:block; margin-top:5px;}
+    .social-links a:hover{color:white;}
+
+    .particle {
+      position: fixed;
+      background: white;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      opacity: 0.5;
+      animation: floatUp linear infinite;
+    }
+    @keyframes floatUp { 0%{transform:translateY(0);opacity:0.6;} 100%{transform:translateY(-900px);opacity:0;} }
+  </style>
+</head>
+
+<body class="intro-body">
+
+  <img src="logo12.png" alt="Logo" class="super-logo-img">
+
+  <div class="bingo-wrapper" id="main-bingo-container">
+    <div class="bingo-header">
+      <div>B</div><div>I</div><div>N</div><div>G</div><div>O</div>
+    </div>
+    <div id="board-wrap" class="board-wrap"></div>
+  </div>
+
+  <div class="board-controls" style="text-align: center; margin-top: 20px;">
+    <button onclick="window.location.href='index.html'" class="enter-btn">Volver al Inicio</button>
+  </div>
+
+  <div class="social-links">
+    <a href="https://www.twitch.tv/neptune_180" target="_blank">Twitch: neptune_180</a>
+    <a href="https://www.instagram.com/neptu1.80/" target="_blank">Instagram: neptu1.80</a>
+    <a href="https://x.com/NptAry" target="_blank">X: @NptAry</a>
+  </div>
+
+  <!-- JavaScript para tema y número de bingo -->
+  <script src="script.js"></script>
+  
+  <!-- JavaScript del bingo - AHORA DETECTA AUTOMÁTICAMENTE EL NÚMERO -->
+  <script>
+    // ====================================
+    // CONFIGURACIÓN POR BINGO
+    // ====================================
+    
+    // Obtener número de bingo automáticamente
+    function obtenerMiNumeroBingo() {
+      // Usar la función del script.js externo si existe
+      if (typeof obtenerNumeroBingo === 'function') {
+        return obtenerNumeroBingo();
+      }
+      
+      // Si no, detectar del nombre del archivo
+      const nombreArchivo = window.location.pathname.split('/').pop();
+      if (nombreArchivo.startsWith('bingo') && nombreArchivo.endsWith('.html')) {
+        const numero = nombreArchivo.replace('bingo', '').replace('.html', '');
+        const numeroInt = parseInt(numero);
+        if (!isNaN(numeroInt) && numeroInt >= 1 && numeroInt <= 20) {
+          return numeroInt;
+        }
+      }
+      
+      return 1; // Por defecto
+    }
+    
+    const MI_NUMERO_BINGO = obtenerMiNumeroBingo();
+    console.log(`🎮 Iniciando Bingo ${MI_NUMERO_BINGO}`);
+    
+    // Actualizar título si no está actualizado
+    if (!document.title.includes(`Bingo ${MI_NUMERO_BINGO}`)) {
+      document.title = `Bingo ${MI_NUMERO_BINGO} - Zona de Juego`;
+    }
+    
+    // ====================================
+    // PARTICULAS
+    // ====================================
+    function crearParticles() {
+      for(let i=0;i<20;i++){
+        let p=document.createElement("div");
+        p.classList.add("particle");
+        p.style.left = Math.random()*window.innerWidth + "px";
+        p.style.top = window.innerHeight + "px";
+        p.style.animationDuration = (3+Math.random()*4) + "s";
+        document.body.appendChild(p);
+        setTimeout(()=>p.remove(),7000);
+      }
+    }
+    setInterval(crearParticles,1000);
+    crearParticles();
+
+    // ====================================
+    // BINGO LOGICA - TABLERO ÚNICO
+    // ====================================
+    const ROWS=5, COLS=5;
+    
+    // Frases específicas por bingo (puedes personalizar cada uno)
+    const sampleWords = [
+`   Ganador del GOTY: *El que patrocinó el evento*`,
+      `   El Host se confunde de nombre de categoría`,
+      `   Trailer: Juego *shooter* post-apocalíptico`,
+      `   Premio a *Mejor Debut Indie* (sale un niño al escenario)`,
+      `   Alguien menciona la *libertad* de exploración`,
+      `   El ganador del GOTY usa una gorra *ridícula*`,
+      `   Trailer: Puros *robots* gigantes peleando`,
+      `   El presentador hace una pose *incómoda* de celebración`,
+      `   Se anuncia una nueva *suscripción* o pase de temporada`,
+      `   Mención al "futuro" de los videojuegos`,
+      `   La cámara enfoca a una *pareja* besándose en la audiencia`,
+      `   El ganador del GOTY dice "sin palabras" y habla 5 minutos`,
+      `   Trailer: Juego *Soulslike* japonés que se ve imposible`,
+      `   El evento usa música *EDM* para las transiciones`,
+      `   Premio al mejor juego *deportes* (nadie aplaude)`,
+      `   Alguien menciona la "narrativa profunda"`,
+      `   El discurso del ganador es silenciado *dos veces*`,
+      `   Juego de *puzles* que nadie va a comprar`,
+      `   El desarrollador tiene el cabello *de colores*`,
+      `   El ganador del GOTY menciona a su *manager* o agente`,
+      `   Corte a publicidad de un juego *competidor*`,
+      `   Trailer: Puros *vehículos voladores*`,
+      `   El Host dice la palabra *gracias* 5 veces seguidas`,
+      `   Alguien intenta una broma *interna* que nadie entiende`,
+      `   El evento se queda sin *snacks* detrás del escenario`
+    ];
+    
+    // Crear un solo tablero con palabras aleatorias
+    const shuffled=sampleWords.slice().sort(()=>Math.random()-0.5);
+    const words=shuffled.slice(0,ROWS*COLS);
+    
+    const board = {
+      id: 1, 
+      words,
+      bingoNum: MI_NUMERO_BINGO
+    };
+
+    const boardWrap=document.getElementById('board-wrap');
+    
+    // ====================================
+    // FUNCIÓN RENDER BOARD
+    // ====================================
+    function renderBoard(boardObj){
+      boardWrap.innerHTML='';
+      
+      // Info del tablero
+      const info=document.createElement('div');
+      info.className='board-info';
+      info.style.cssText = 'text-align: center; color: #00ffc3; margin-bottom: 15px; font-size: 18px;';
+      info.innerHTML=`<strong>🎮 BINGO ${MI_NUMERO_BINGO}</strong>`;
+      boardWrap.appendChild(info);
+
+      const grid=document.createElement('div');
+      grid.className='bingo-grid';
+      
+      // Estado para seguimiento de líneas
+      const estadoCeldas = Array(5).fill().map(() => Array(5).fill(false));
+      const lineasCompletadas = new Set();
+      
+      boardObj.words.forEach((w,idx)=>{
+        const cell=document.createElement('button');
+        cell.className='bingo-cell';
+        cell.type='button';
+        cell.dataset.index=idx;
+        cell.dataset.row = Math.floor(idx / 5);
+        cell.dataset.col = idx % 5;
+        cell.innerHTML=`<span class="cell-word">${w}</span>`;
+        
+        cell.addEventListener('click', function() {
+          this.classList.toggle('marked');
+          
+          const row = parseInt(this.dataset.row);
+          const col = parseInt(this.dataset.col);
+          estadoCeldas[row][col] = this.classList.contains('marked');
+          
+          verificarLineas(estadoCeldas, lineasCompletadas);
+        });
+        
+        grid.appendChild(cell);
+      });
+      
+      boardWrap.appendChild(grid);
+      
+      // Agregar letras debajo
+      agregarLetrasInferiores();
+    }
+
+    // ====================================
+    // FUNCIONES AUXILIARES
+    // ====================================
+    
+    function agregarLetrasInferiores() {
+      const existing = document.querySelector('.letras-inferiores');
+      if (existing) existing.remove();
+      
+      const labels = document.createElement('div');
+      labels.className = 'letras-inferiores';
+      labels.style.cssText = 'display: grid; grid-template-columns: repeat(5, 120px); gap: 5px; margin-top: 5px;';
+      
+      ['B','I','N','G','O'].forEach(letra => {
+        const div = document.createElement('div');
+        div.textContent = letra;
+        div.style.cssText = 'font-size: 40px; font-weight: 900; color: black; text-align: center; height: 40px; display: flex; align-items: center; justify-content: center;';
+        labels.appendChild(div);
+      });
+      
+      const grid = document.querySelector('.bingo-grid');
+      if (grid) {
+        grid.parentNode.insertBefore(labels, grid.nextSibling);
+      }
+    }
+
+    function verificarLineas(estadoCeldas, lineasCompletadas) {
+      // Filas
+      for (let fila = 0; fila < 5; fila++) {
+        const clave = `fila-${fila}`;
+        if (estadoCeldas[fila].every(c => c) && !lineasCompletadas.has(clave)) {
+          lineasCompletadas.add(clave);
+          animarLinea('fila', fila);
+        }
+      }
+      
+      // Columnas
+      for (let col = 0; col < 5; col++) {
+        const clave = `col-${col}`;
+        if (estadoCeldas.every(f => f[col]) && !lineasCompletadas.has(clave)) {
+          lineasCompletadas.add(clave);
+          animarLinea('columna', col);
+        }
+      }
+      
+      // Diagonales
+      const diag1 = estadoCeldas.every((f, i) => f[i]);
+      const diag2 = estadoCeldas.every((f, i) => f[4-i]);
+      
+      if (diag1 && !lineasCompletadas.has('diag1')) {
+        lineasCompletadas.add('diag1');
+        animarLinea('diagonal', 1);
+      }
+      
+      if (diag2 && !lineasCompletadas.has('diag2')) {
+        lineasCompletadas.add('diag2');
+        animarLinea('diagonal', 2);
+      }
+    }
+
+    function animarLinea(tipo, indice) {
+      const letrasSuperiores = document.querySelectorAll('.bingo-header div');
+      const letrasInferiores = document.querySelectorAll('.letras-inferiores div');
+      
+      console.log(`🎉 Bingo ${MI_NUMERO_BINGO}: ¡Línea ${tipo} ${indice+1} completada!`);
+      
+      if (tipo === 'columna') {
+        animarLetra(letrasSuperiores[indice]);
+        animarLetra(letrasInferiores[indice]);
+      } else {
+        letrasSuperiores.forEach(l => animarLetra(l));
+        letrasInferiores.forEach(l => animarLetra(l));
+      }
+      
+      mostrarNotificacion(tipo, indice);
+    }
+
+    function animarLetra(elemento) {
+      if (!elemento) return;
+      elemento.classList.add('linea-completada');
+      setTimeout(() => elemento.classList.remove('linea-completada'), 2400);
+    }
+
+    function mostrarNotificacion(tipo, indice) {
+      let notif = document.querySelector('.notif-bingo');
+      if (!notif) {
+        notif = document.createElement('div');
+        notif.className = 'notif-bingo';
+        notif.style.cssText = `
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%) scale(0);
+          background: rgba(0, 0, 0, 0.95);
+          color: #00ff55;
+          padding: 25px 40px;
+          border-radius: 15px;
+          font-size: 60px;
+          font-weight: 900;
+          z-index: 3000;
+          text-align: center;
+          opacity: 0;
+          transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          box-shadow: 0 0 40px rgba(0, 255, 85, 0.5);
+          border: 3px solid #00ff55;
+          pointer-events: none;
+        `;
+        notif.innerHTML = `🎮 BINGO ${MI_NUMERO_BINGO}!<div style="font-size:22px;color:#fff;margin-top:8px;opacity:0.8;">¡Línea completada!</div>`;
+        document.body.appendChild(notif);
+      }
+      
+      // Personalizar mensaje
+      let mensajeExtra = '';
+      if (tipo === 'columna') {
+        const letras = ['B', 'I', 'N', 'G', 'O'];
+        mensajeExtra = `Columna ${letras[indice]}`;
+      } else if (tipo === 'fila') {
+        mensajeExtra = `Fila ${indice + 1}`;
+      } else {
+        mensajeExtra = indice === 1 ? 'Diagonal principal' : 'Diagonal secundaria';
+      }
+      
+      notif.querySelector('div').textContent = `¡${mensajeExtra} completada!`;
+      
+      notif.style.opacity = '1';
+      notif.style.transform = 'translate(-50%, -50%) scale(1)';
+      
+      setTimeout(() => {
+        notif.style.opacity = '0';
+        notif.style.transform = 'translate(-50%, -50%) scale(0)';
+      }, 3000);
+    }
+
+    // ====================================
+    // INICIALIZAR
+    // ====================================
+    
+    renderBoard(board);
+    
+    console.log(`🎮 Bingo ${MI_NUMERO_BINGO} iniciado - Tablero único`);
+  </script>
+</body>
+</html>

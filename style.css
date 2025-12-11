@@ -1,0 +1,130 @@
+/* ====================================
+      ESTILOS COMPARTIDOS
+==================================== */
+
+/* RESET Y BASE */
+* {
+  box-sizing: border-box;
+}
+
+/* FADE IN ANIMATION */
+body {
+  animation: fadeIn 1.6s ease forwards;
+  opacity: 0;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  min-height: 100vh;
+  font-family: 'Arial', sans-serif;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+/* FONDO PARA TODAS LAS PÁGINAS */
+.intro-body {
+  background-image: url('Imagegoty.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* LOGO PARA TODAS LAS PÁGINAS */
+.super-logo-img {
+  width: 260px;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  opacity: 0;
+  animation: logoSlide 1.8s ease forwards;
+  animation-delay: 0.5s;
+  z-index: 100;
+  pointer-events: none;
+}
+
+@keyframes logoSlide {
+  0% { 
+    opacity: 0; 
+    transform: translateY(-30px); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+/* BOTONES ESTÁNDAR */
+.enter-btn {
+  background: linear-gradient(135deg, #00ffc3, #00e6ac);
+  padding: 12px 24px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #000;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 255, 195, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.enter-btn:hover {
+  background: linear-gradient(135deg, #0fb, #0da);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 255, 195, 0.4);
+}
+
+.enter-btn:active {
+  transform: translateY(0);
+}
+
+/* REDES SOCIALES */
+.social-links {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  text-align: right;
+  z-index: 100;
+}
+
+.social-links a {
+  color: #00ffc3;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 6px 12px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 15px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 255, 195, 0.2);
+  display: block;
+  margin-top: 8px;
+}
+
+.social-links a:hover {
+  color: #fff;
+  background: rgba(0, 255, 195, 0.1);
+  transform: translateX(-5px);
+}
+
+/* RESPONSIVE */
+@media (max-width: 700px) {
+  .super-logo-img {
+    width: 180px;
+    right: 10px;
+    top: 10px;
+  }
+  
+  .social-links {
+    right: 10px;
+    bottom: 10px;
+  }
+  
+  .social-links a {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+}
